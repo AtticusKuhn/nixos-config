@@ -1,4 +1,3 @@
-# modules/themes/alucard/default.nix --- a regal dracula-inspired theme
 
 { options, config, lib, pkgs, ... }:
 
@@ -6,9 +5,29 @@ with lib;
 with lib.my;
 let cfg = config.modules.theme;
 in {
-  config = mkIf (cfg.active == "alucard") (mkMerge [
+  config = mkIf (cfg.active == "pywal") (mkMerge [
     # Desktop-agnostic configuration
     {
+      environment.systemPackages = [
+        pkgs.pywal
+      ];
+# systemd.user.services.foo = {
+#   script = ''
+#     echo "Doing some X11 stuff"
+#   '';
+# };
+      systemd.user.services.setWallpapers = {
+        script = ''
+        /home/atticusk/scripts/wallpaper.sh
+        '';
+        # wantedBy = ["multi-user.target"];
+
+        wantedBy = [ "graphical-session.target" ];
+        partOf = [ "graphical-session.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+        };
+      };
       modules = {
         theme = {
           wallpaper = mkDefault ./config/wallpaper.png;
@@ -60,20 +79,13 @@ in {
         };
       };
     }
+
     # Desktop (X11) theming
     (mkIf config.services.xserver.enable {
       user.packages = with pkgs; [
         unstable.dracula-theme
         paper-icon-theme # for rofi
       ];
-      environment.systemPackages = [
-        pkgs.pywal
-      ];
-services.xserver.displayManager.sessionCommands = ''
-${pkgs.pywal}/bin/wal -i "/home/atticusk/wallpapers"
-cp /home/atticusk/.cache/wal/colors.hs /home/atticusk/.xmonad/Colors.hs
-        '';
-
       fonts = {
         fonts = with pkgs; [
           fira-code
@@ -85,25 +97,25 @@ cp /home/atticusk/.cache/wal/colors.hs /home/atticusk/.xmonad/Colors.hs
         ];
       };
 
-      # # # Compositor
-      # services.picom = {
-      #   fade = true;
-      #   fadeDelta = 1;
-      #   fadeSteps = [ 0.01 0.012 ];
-      #   shadow = true;
-      #   shadowOffsets = [ (-10) (-10) ];
-      #   shadowOpacity = 0.22;
-      #   # activeOpacity = "1.00";
-      #   # inactiveOpacity = "0.92";
-      #   settings = {
-      #     shadow-radius = 12;
-      #     # blur-background = true;
-      #     # blur-background-frame = true;
-      #     # blur-background-fixed = true;
-      #     blur-kern = "7x7box";
-      #     blur-strength = 320;
-      #   };
-      # };
+      # Compositor
+      services.picom = {
+        fade = true;
+        fadeDelta = 1;
+        fadeSteps = [ 0.01 0.012 ];
+        shadow = true;
+        shadowOffsets = [ (-10) (-10) ];
+        shadowOpacity = 0.22;
+        # activeOpacity = "1.00";
+        # inactiveOpacity = "0.92";
+        settings = {
+          shadow-radius = 12;
+          # blur-background = true;
+          # blur-background-frame = true;
+          # blur-background-fixed = true;
+          blur-kern = "7x7box";
+          blur-strength = 320;
+        };
+      };
 
       # Login screen theme
       services.xserver.displayManager.lightdm.greeters.mini.extraConfig = ''
@@ -149,3 +161,4 @@ cp /home/atticusk/.cache/wal/colors.hs /home/atticusk/.xmonad/Colors.hs
     })
   ]);
 }
+

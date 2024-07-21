@@ -13,9 +13,9 @@ in {
     enable = mkBoolOpt false;
     doom = rec {
       enable = mkBoolOpt false;
-      forgeUrl = mkOpt types.str "https://github.com";
-      repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
-      configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/doom-emacs-private";
+      # forgeUrl = mkOpt types.str "https://github.com";
+      # repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
+      # configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/doom-emacs-private";
     };
   };
 
@@ -38,7 +38,7 @@ in {
       fd                  # faster projectile indexing
       imagemagick         # for image-dired
       (mkIf (config.programs.gnupg.agent.enable)
-        pinentry_emacs)   # in-emacs gnupg prompts
+        pinentry-emacs)   # in-emacs gnupg prompts
       zstd                # for undo-fu-session/undo-tree compression
 
       ## Module dependencies
@@ -50,9 +50,11 @@ in {
       sqlite
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
-      # :lang beancount
-      beancount
-      unstable.fava  # HACK Momentarily broken on nixos-unstable
+      # This is used for telega.el, which is a telegram client
+      tdlib
+      # also for telege.el/??
+      emacsPackages.telega
+
     ];
 
     env.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
@@ -61,11 +63,13 @@ in {
 
     fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
 
+    services.xserver.displayManager.sessionCommands = ''
+    emacs --daemon &
+    '';
     system.userActivationScripts = mkIf cfg.doom.enable {
       installDoomEmacs = ''
         if [ ! -d "$XDG_CONFIG_HOME/emacs" ]; then
            git clone --depth=1 --single-branch "${cfg.doom.repoUrl}" "$XDG_CONFIG_HOME/emacs"
-           git clone "${cfg.doom.configRepoUrl}" "$XDG_CONFIG_HOME/doom"
         fi
       '';
     };

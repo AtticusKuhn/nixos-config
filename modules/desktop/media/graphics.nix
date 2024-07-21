@@ -14,10 +14,10 @@ let cfg = config.modules.desktop.media.graphics;
 in {
   options.modules.desktop.media.graphics = {
     enable         = mkBoolOpt false;
-    tools.enable   = mkBoolOpt true;
+    tools.enable   = mkBoolOpt false;
     raster.enable  = mkBoolOpt true;
-    vector.enable  = mkBoolOpt true;
-    sprites.enable = mkBoolOpt true;
+    vector.enable  = mkBoolOpt false;
+    sprites.enable = mkBoolOpt false;
     models.enable  = mkBoolOpt false;
   };
 
@@ -34,10 +34,13 @@ in {
       ] else []) ++
 
       # Replaces photoshop
+      #
       (if cfg.raster.enable then [
-        krita
+        # krita
+        # gimp
+
         gimp
-        gimpPlugins.resynthesizer  # content-aware scaling in gimp
+        # gimpPlugins.resynthesizer  # content-aware scaling in gimp
       ] else []) ++
 
       # Sprite sheets & animation

@@ -71,4 +71,6 @@ with lib.my;
     gnumake
     unzip
   ];
+  # this is bad!
+  home-manager.users.atticusk.home.packages =   [ pkgs.wget  ];
 }

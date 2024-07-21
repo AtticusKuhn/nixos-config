@@ -11,8 +11,9 @@
     desktop = {
       xmonad.enable = true;
       apps = {
-        # rofi.enable = true;
         # godot.enable = true;
+        thunderbird.enable = true;
+        whatsapp.enable = true;
       };
       browsers = {
         default = "qutebrowser";
@@ -20,18 +21,12 @@
         # firefox.enable = true;
         qutebrowser.enable = true;
       };
-      gaming = {
-        # steam.enable = true;
-        # emulators.enable = true;
-        # emulators.psx.enable = true;
-      };
       media = {
-        # daw.enable = true;
-        # documents.enable = true;
         graphics.enable = true;
+
+        graphics.raster.enable = true;
+        # documents.enable = true;
         mpv.enable = true;
-        # recording.enable = true;
-        # spotify.enable = true;
       };
       term = {
         default = "xst";
@@ -42,6 +37,12 @@
       };
     };
     dev = {
+      # curse you, Cambridge!!
+      java.enable = true;
+      lean.enable = true;
+      ocaml.enable = true;
+      latex.enable = true;
+      sqlite.enable = true;
       # node.enable = true;
       # rust.enable = true;
       # python.enable = true;
@@ -49,6 +50,8 @@
     editors = {
       default = "emacs";
       emacs.enable = true;
+      # idea.enable = true;
+      # android-studio.enable = true;
       # vim.enable = true;
     };
     shell = {
@@ -56,12 +59,13 @@
       # vaultwarden.enable = true;
       # direnv.enable = true;
       git.enable    = true;
-      # gnupg.enable  = true;
+      gnupg.enable  = true;
       # tmux.enable   = true;
       zsh.enable    = true;
     };
     services = {
-      ssh.enable = true;
+      syncthing.enable = true;
+      # ssh.enable = true;
       # docker.enable = true;
       # Needed occasionally to help the parental units with PC problems
       # teamviewer.enable = true;
@@ -71,14 +75,33 @@
 
 
   ## Local config
-  programs.ssh.startAgent = true;
-  services.openssh.startWhenNeeded = true;
+  # programs.ssh.startAgent = true;
+  # services.openssh.startWhenNeeded = true;
 
   networking.networkmanager.enable = true;
+  # programs.nm-applet.enable = true;
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+  hardware.pulseaudio.enable = true;
+  # hardware.bluetooth.enable = true;
+  #
+  #This is for printing
+  services.printing.enable = true;
+  services.avahi.enable = true;
+  services.avahi.nssmdns = true;
+  # for a WiFi printer
+  services.avahi.openFirewall = true;
 
-  # I think this is necessary for graphics, don't ask me what it does.
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
   boot.kernelParams = ["i915.force_probe=46a8"];
 
+
+
+   # users.users.atticusk.usersextraGroups = [ "networkmanager" "wheel" "audio" "sound" "video" ];
   ## Personal backups
   # Syncthing is a bit heavy handed for my needs, so rsync to my NAS instead.
   systemd = {

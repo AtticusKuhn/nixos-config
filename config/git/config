@@ -1,7 +1,7 @@
 [user]
-	name = Henrik Lissner
-	email = git@henrik.io
-	signingKey = FA1FADD9440B688CAA75A057B60957CA074D39A3
+	name = Atticus Kuhn
+	email = atticusmkuhn@atticsmkuhn.com
+	signingKey = E18D86197F1F1A0E95023383233C63A826D6C2D7
 [commit]
 	gpgSign = true
 [tag]
@@ -11,9 +11,9 @@
 [init]
 	defaultBranch = main
 [github]
-	user = hlissner
+	user = AtticusKuhn
 [gitlab]
-	user = hlissner
+	user = AtticusKuhn
 [push]
 	autoSquash = true
 [push]

@@ -2,17 +2,15 @@
 
 with lib;
 with lib.my;
-let cfg = config.modules.desktop.media.mpv;
+let cfg = config.modules.editors.idea;
 in {
-  options.modules.desktop.media.mpv = {
+  options.modules.editors.idea = {
     enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      # mpv-with-scripts
-      mpv
-      mpvc  # CLI controller for mpv
+      jetbrains.idea-community
     ];
   };
 }

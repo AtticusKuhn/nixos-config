@@ -1,4 +1,4 @@
-#!/usr/bin/env cached-nix-shell
+#!/usr/bin/env nix-shell
 #! nix-shell -p ruby_2_7 -i "ruby -S" --quiet
 
 DESC = <<~DESC

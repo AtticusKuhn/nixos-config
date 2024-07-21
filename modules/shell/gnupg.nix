@@ -12,9 +12,14 @@ in {
   config = mkIf cfg.enable {
     environment.variables.GNUPGHOME = "$XDG_CONFIG_HOME/gnupg";
 
-    programs.gnupg.agent.enable = true;
+    programs.gnupg.agent =  {
+      enable = true;
+      # pinentryFlavor = "gtk2";
+    };
 
-    user.packages = [ pkgs.tomb ];
+    user.packages = [ pkgs.tomb  pkgs.cyrus-sasl-xoauth2 pkgs.cyrus_sasl ];
+    services.pcscd.enable = true;
+
 
     # HACK Without this config file you get "No pinentry program" on 20.03.
     #      programs.gnupg.agent.pinentryFlavor doesn't appear to work, and this

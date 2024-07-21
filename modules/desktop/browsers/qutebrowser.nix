@@ -1,7 +1,5 @@
 # modules/browser/qutebrowser.nix --- https://github.com/qutebrowser/qutebrowser
 #
-# Qutebrowser is cute because it's not enough of a browser to be handsome.
-# Still, we can all tell he'll grow up to be one hell of a lady-killer.
 
 { options, config, lib, pkgs, ... }:
 
@@ -32,6 +30,11 @@ in {
       # For Brave adblock in qutebrowser, which is significantly better than the
       # built-in host blocking. Works on youtube and crunchyroll ads!
       python39Packages.adblock
+      # I use ranger as a filepicker for qutebrowser
+      ranger
+      # a strange error caused me to install this
+      python3
+      python312Packages.setuptools
     ];
 
     home = {

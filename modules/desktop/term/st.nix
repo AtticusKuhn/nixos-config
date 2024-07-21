@@ -21,6 +21,7 @@ in {
 
     user.packages = with pkgs; [
       xst  # st + nice-to-have extensions
+      lukesmithxyz-st
       (makeDesktopItem {
         name = "xst";
         desktopName = "Suckless Terminal";

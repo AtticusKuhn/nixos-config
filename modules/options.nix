@@ -39,11 +39,12 @@ with lib.my;
   config = {
     user =
       let user = builtins.getEnv "USER";
-          name = if elem user [ "" "root" ] then "hlissner" else user;
+          name = if elem user [ "" "root" ] then "atticusk" else user;
       in {
         inherit name;
-        description = "The primary user account";
-        extraGroups = [ "wheel" ];
+        description = "Atticus Kuhn";
+
+        extraGroups = [ "networkmanager" "wheel" ];
         isNormalUser = true;
         home = "/home/${name}";
         group = "users";
