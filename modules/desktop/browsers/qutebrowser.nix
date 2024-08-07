@@ -32,9 +32,6 @@ in {
       python39Packages.adblock
       # I use ranger as a filepicker for qutebrowser
       ranger
-      # a strange error caused me to install this
-      python3
-      python312Packages.setuptools
     ];
 
     home = {

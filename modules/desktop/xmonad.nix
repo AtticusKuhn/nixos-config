@@ -30,19 +30,19 @@ in {
     services = {
       picom.enable = true;
       redshift.enable = true;
+      # this enables mouse touchpad???
+      libinput.enable = true;
+      displayManager.defaultSession = "none+xmonad";
       xserver = {
-        # this enables mouse touchap???
-        libinput.enable = true;
         enable = true;
         displayManager = {
-          defaultSession = "none+xmonad";
           lightdm.enable = true;
           lightdm.greeters.mini.enable = true;
         };
         windowManager.xmonad = {
           enable = true;
           enableContribAndExtras = true;
-          config = builtins.readFile /home/atticusk/.xmonad/xmonad.hs;
+          config = builtins.readFile "${configDir}/xmonad/xmonad.hs";
           # libFiles  = {
           #   "Colors.hs" = /home/atticusk/.xmonad/lib/Colors.hs;
           # };
@@ -69,12 +69,12 @@ in {
     };
 
     # link recursively so other modules can link files in their folders
-    # home.configFile = {
-    #   "sxhkd".source = "${configDir}/sxhkd";
-    #   "bspwm" = {
-    #     source = "${configDir}/bspwm";
-    #     recursive = true;
-    #   };
-    # };
+    home.configFile = {
+      # "sxhkd".source = "${configDir}/sxhkd";
+      "xmonad" = {
+        source = "${configDir}/xmonad";
+        recursive = true;
+      };
+    };
   };
 }
