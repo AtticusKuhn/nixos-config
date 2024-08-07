@@ -1,37 +1,63 @@
 # Emacs is my main driver. I'm the author of Doom Emacs
-# https://github.com/hlissner/doom-emacs. This module sets it up to meet my
-# particular Doomy needs.
+# https://github.com/doomemacs. This module sets it up to meet my particular
+# Doomy needs.
 
-{ config, lib, pkgs, inputs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.editors.emacs;
-    configDir = config.dotfiles.configDir;
+    emacs = with pkgs; (emacsPackagesFor
+      (if config.modules.desktop.type == "wayland"
+       then emacs-pgtk
+       else emacs-git)).emacsWithPackages
+      (epkgs: []);
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;
+<<<<<<< HEAD
     doom = rec {
       enable = mkBoolOpt false;
       # forgeUrl = mkOpt types.str "https://github.com";
       # repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
       # configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/doom-emacs-private";
     };
+=======
+    # doom = rec {
+    #   enable = mkBoolOpt false;
+    #   forgeUrl = mkOpt types.str "https://github.com";
+    #   repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
+    #   configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/.doom.d";
+    # };
+>>>>>>> origin
   };
 
   config = mkIf cfg.enable {
-    nixpkgs.overlays = [ inputs.emacs-overlay.overlay ];
+    nixpkgs.overlays = [
+      hey.inputs.emacs-overlay.overlays.default
+    ];
 
     user.packages = with pkgs; [
+      (mkLauncherEntry "Emacs (Debug Mode)" {
+        description = "Start Emacs in debug mode";
+        icon = "emacs";
+        exec = "${emacs}/bin/emacs --debug-init";
+      })
+
       ## Emacs itself
       binutils       # native-comp needs 'as', provided by this
+<<<<<<< HEAD
       # 28.2 + native-comp
       ((emacsPackagesFor emacs-unstable).emacsWithPackages
         (epkgs: [ epkgs.vterm ]))
+=======
+      # HEAD + native-comp
+      emacs
+>>>>>>> origin
 
       ## Doom dependencies
       git
-      (ripgrep.override {withPCRE2 = true;})
+      ripgrep
       gnutls              # for TLS connectivity
 
       ## Optional dependencies
@@ -50,17 +76,26 @@ in {
       sqlite
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
+<<<<<<< HEAD
       # This is used for telega.el, which is a telegram client
       tdlib
       # also for telege.el/??
       emacsPackages.telega
 
+=======
+      # :lang beancount
+      beancount
+      fava
+      # :lang nix
+      age
+>>>>>>> origin
     ];
 
-    env.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
+    environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
 
-    modules.shell.zsh.rcFiles = [ "${configDir}/emacs/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${hey.configDir}/emacs/aliases.zsh" ];
 
+<<<<<<< HEAD
     fonts.packages = [ pkgs.emacs-all-the-icons-fonts ];
 
     services.xserver.displayManager.sessionCommands = ''
@@ -73,5 +108,10 @@ in {
         fi
       '';
     };
+=======
+    fonts.packages = [
+      (pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+    ];
+>>>>>>> origin
   };
 }

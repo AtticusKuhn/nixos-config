@@ -2,6 +2,10 @@
 bindkey -M viins '^a' beginning-of-line
 bindkey -M viins '^d' push-line-or-edit
 
+# Vanilla behavior is to move by characters
+bindkey -M viins '^b' backward-word
+bindkey -M viins '^f' forward-word
+
 # Up arrow:
 bindkey '\e[A' history-substring-search-up
 bindkey '\eOA' history-substring-search-up

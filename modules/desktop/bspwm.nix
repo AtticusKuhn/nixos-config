@@ -1,24 +1,32 @@
-{ options, config, lib, pkgs, ... }:
+## modules/desktop/bspwm.nix
+#
+# Sets up a BSPWM-based desktop environment.
+#
+# TODO: Replace maim/slop with flameshot
+# TODO: Need hey .osd analog
+# TODO: Need hey.info support
+# TODO: Need hey.hooks support
+# TODO: Need hey hook startup analog
+# TODO: Need hey hook reload analog
+# TODO: Need monitors options
+
+{ hey, lib, options, config, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.bspwm;
-    configDir = config.dotfiles.configDir;
 in {
   options.modules.desktop.bspwm = {
     enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
-    modules.theme.onReload.bspwm = ''
-      ${pkgs.bspwm}/bin/bspc wm -r
-      source $XDG_CONFIG_HOME/bspwm/bspwmrc
-    '';
+    modules.desktop.type = "x11";
+
+    modules.services.dunst.enable = true;
 
     environment.systemPackages = with pkgs; [
       lightdm
-      dunst
-      libnotify
       (polybar.override {
         pulseSupport = true;
         nlSupport = true;
@@ -26,12 +34,15 @@ in {
     ];
 
     services = {
-      picom.enable = true;
+      picom = {
+        enable = true;
+        package = pkgs.unstable.picom;
+      };
       redshift.enable = true;
+      displayManager.defaultSession = "none+bspwm";
       xserver = {
         enable = true;
         displayManager = {
-          defaultSession = "none+bspwm";
           lightdm.enable = true;
           lightdm.greeters.mini.enable = true;
         };
@@ -39,20 +50,14 @@ in {
       };
     };
 
-    systemd.user.services."dunst" = {
-      enable = true;
-      description = "";
-      wantedBy = [ "default.target" ];
-      serviceConfig.Restart = "always";
-      serviceConfig.RestartSec = 2;
-      serviceConfig.ExecStart = "${pkgs.dunst}/bin/dunst";
-    };
-
     # link recursively so other modules can link files in their folders
     home.configFile = {
-      "sxhkd".source = "${configDir}/sxhkd";
+      "sxhkd" = {
+        source = "${hey.configDir}/sxhkd";
+        recursive = true;
+      };
       "bspwm" = {
-        source = "${configDir}/bspwm";
+        source = "${hey.configDir}/bspwm";
         recursive = true;
       };
     };

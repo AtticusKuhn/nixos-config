@@ -1,38 +1,51 @@
 # modules/desktop/media/graphics.nix
 #
-# The hardest part about switching to linux? Sacrificing Adobe. It really is
-# difficult to replace and its open source alternatives don't *quite* cut it,
-# but enough that I can do a fraction of it on Linux. For the rest I have a
-# second computer dedicated to design work (and gaming).
+# I use almost every app in the Adobe suite, both professionally and personally.
+# Sacrificing them was the hardest (and most liberating) part of my switch to
+# Linux more than a decade ago. For much of that time I've maintained a
+# dedicated Windows PC for it, but within the past few years (2021/2022), its
+# alternatives have finally (in my opinion) become viable enough for me to drop
+# the second PC.
 
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.media.graphics;
-    configDir = config.dotfiles.configDir;
 in {
   options.modules.desktop.media.graphics = {
     enable         = mkBoolOpt false;
     tools.enable   = mkBoolOpt false;
     raster.enable  = mkBoolOpt true;
+<<<<<<< HEAD
     vector.enable  = mkBoolOpt false;
     sprites.enable = mkBoolOpt false;
     models.enable  = mkBoolOpt false;
+=======
+    vector.enable  = mkBoolOpt true;
+    sprites.enable = mkBoolOpt true;
+    design.enable  = mkBoolOpt true;
+>>>>>>> origin
   };
 
   config = mkIf cfg.enable {
-    user.packages = with pkgs;
-      (if cfg.tools.enable then [
-        font-manager   # so many damned fonts...
-        imagemagick    # for image manipulation from the shell
-      ] else []) ++
+    user.packages = with pkgs.unstable;
+      # CLI/scripting tools
+      (optionals cfg.tools.enable [
+        imagemagick
+        # Optimizers
+        # LOSSLESS   LOSSY
+        optipng      pngquant
+        jpegoptim    libjpeg  # (jpegtran)
+                     gifsicle
+      ]) ++
 
-      # replaces illustrator & indesign
-      (if cfg.vector.enable then [
-        unstable.inkscape
-      ] else []) ++
+      # Replaces Illustrator (maybe indesign?)
+      (optionals cfg.vector.enable [
+        inkscape
+      ]) ++
 
+<<<<<<< HEAD
       # Replaces photoshop
       #
       (if cfg.raster.enable then [
@@ -42,19 +55,58 @@ in {
         gimp
         # gimpPlugins.resynthesizer  # content-aware scaling in gimp
       ] else []) ++
+=======
+      # Replaces Photoshop
+      (optionals cfg.raster.enable [
+        (gimp-with-plugins.override {
+          plugins = with gimpPlugins; [
+            bimp            # batch image manipulation
+            # resynthesizer   # content-aware scaling in gimp
+            gmic            # an assortment of extra filters
+          ];
+        })
+        krita   # But Krita is better for digital illustration
+      ]) ++
+>>>>>>> origin
 
       # Sprite sheets & animation
-      (if cfg.sprites.enable then [
+      (optionals cfg.sprites.enable [
         aseprite-unfree
-      ] else []) ++
+      ]) ++
 
-      # 3D modelling
-      (if cfg.models.enable then [
-        blender
-      ] else []);
+      # Replaces Adobe XD (or Sketch)
+      (optionals cfg.design.enable [
+        (if config.modules.desktop.type == "wayland"
+         then figma-linux.overrideAttrs (final: prev: {
+           postFixup = ''
+             substituteInPlace $out/share/applications/figma-linux.desktop \
+               --replace "Exec=/opt/figma-linux/figma-linux" \
+                         "Exec=$out/bin/${final.pname} --enable-features=UseOzonePlatform \
+                                                       --ozone-platform=wayland \
+                                                       --enable-vulkan \
+                                                       --enable-gpu-rasterization \
+                                                       --enable-oop-rasterization \
+                                                       --enable-gpu-compositing \
+                                                       --enable-accelerated-2d-canvas \
+                                                       --enable-zero-copy \
+                                                       --canvas-oop-rasterization \
+                                                       --disable-features=UseChromeOSDirectVideoDecoder \
+                                                       --enable-accelerated-video-decode \
+                                                       --enable-accelerated-video-encode \
+                                                       --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks,RawDraw,Vulkan \
+                                                       --enable-hardware-overlays \
+                                                       --enable-unsafe-webgpu"
+           '';
+         })
+         else figma-linux)
+      ]);
 
     home.configFile = mkIf cfg.raster.enable {
-      "GIMP/2.10" = { source = "${configDir}/gimp"; recursive = true; };
+      "GIMP/2.10" = {
+        source = "${hey.configDir}/gimp";
+        recursive = true;
+      };
+      # TODO Inkscape dotfiles
     };
   };
 }

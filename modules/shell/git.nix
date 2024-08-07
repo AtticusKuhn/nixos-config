@@ -1,9 +1,8 @@
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.shell.git;
-    configDir = config.dotfiles.configDir;
 in {
   options.modules.shell.git = {
     enable = mkBoolOpt false;
@@ -12,7 +11,7 @@ in {
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       gitAndTools.git-annex
-      unstable.gitAndTools.gh
+      gitAndTools.gh
       gitAndTools.git-open
       gitAndTools.diff-so-fancy
       (mkIf config.modules.shell.gnupg.enable
@@ -32,11 +31,11 @@ in {
     };
 
     home.configFile = {
-      "git/config".source = "${configDir}/git/config";
-      "git/ignore".source = "${configDir}/git/ignore";
-      "git/attributes".source = "${configDir}/git/attributes";
+      "git/config".source = "${hey.configDir}/git/config";
+      "git/ignore".source = "${hey.configDir}/git/ignore";
+      "git/attributes".source = "${hey.configDir}/git/attributes";
     };
 
-    modules.shell.zsh.rcFiles = [ "${configDir}/git/aliases.zsh" ];
+    modules.shell.zsh.rcFiles = [ "${hey.configDir}/git/aliases.zsh" ];
   };
 }

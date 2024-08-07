@@ -1,58 +1,104 @@
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
+with builtins;
 with lib;
-with lib.my;
-let cfg = config.modules.desktop.apps.rofi;
+let inherit (hey.lib.pkgs) mkWrapper mkLauncherEntry;
+    cfg = config.modules.desktop.apps.rofi;
+
+    pkgs' = pkgs.unstable;
+
+    rofiPkg = if config.modules.desktop.type == "wayland"
+              then pkgs'.rofi-wayland-unwrapped
+              else pkgs'.rofi-unwrapped;
+    rofiFBPkg = pkgs'.rofi-file-browser.override { rofi = rofiPkg; };
+    rofiCalcPkg = pkgs'.rofi-calc.override { rofi-unwrapped = rofiPkg; };
+    rofiBlocksPkg = hey.packages.rofi-blocks.override { rofi-unwrapped = rofiPkg; };
 in {
-  options.modules.desktop.apps.rofi = {
+  options.modules.desktop.apps.rofi = with hey.lib.options; {
     enable = mkBoolOpt false;
   };
 
-  config = mkIf cfg.enable {
-    # link recursively so other modules can link files in its folder
-    # home.xdg.configFile."rofi" = {
-    #   source = <config/rofi>;
-    #   recursive = true;
-    # };
+  config = mkIf cfg.enable (mkMerge [
+    {
+      home.configFile."rofi" = {
+        source = "${hey.configDir}/rofi";
+        recursive = true;
+      };
 
-    user.packages = with pkgs; [
-      (writeScriptBin "rofi" ''
-        #!${stdenv.shell}
-        exec ${pkgs.rofi}/bin/rofi -terminal xst -m -1 "$@"
-      '')
+      services.xserver.gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
 
-      # Fake rofi dmenu entries
-      (makeDesktopItem {
-        name = "rofi-browsermenu";
-        desktopName = "Open Bookmark in Browser";
-        icon = "bookmark-new-symbolic";
-        exec = "${config.dotfiles.binDir}/rofi/browsermenu";
-      })
-      (makeDesktopItem {
-        name = "rofi-browsermenu-history";
-        desktopName = "Open Browser History";
-        icon = "accessories-clock";
-        exec = "${config.dotfiles.binDir}/rofi/browsermenu history";
-      })
-      (makeDesktopItem {
-        name = "rofi-filemenu";
-        desktopName = "Open Directory in Terminal";
-        icon = "folder";
-        exec = "${config.dotfiles.binDir}/rofi/filemenu";
-      })
-      (makeDesktopItem {
-        name = "rofi-filemenu-scratch";
-        desktopName = "Open Directory in Scratch Terminal";
-        icon = "folder";
-        exec = "${config.dotfiles.binDir}/rofi/filemenu -x";
-      })
+      environment.variables.ROFI_PLUGIN_PATH = [
+        "$XDG_CONFIG_HOME/rofi/plugins"  # for local development
+        "${rofiBlocksPkg}/lib/rofi"
+        "${rofiFBPkg}/lib/rofi"
+        "${rofiCalcPkg}/lib/rofi"
+      ];
 
-      (makeDesktopItem {
-        name = "lock-display";
-        desktopName = "Lock screen";
-        icon = "system-lock-screen";
-        exec = "${config.dotfiles.binDir}/zzz";
-      })
-    ];
-  };
+      user.packages = with pkgs; [
+        rofiPkg
+        (unstable.rofimoji.override { rofi = rofiPkg; })
+        (mkLauncherEntry "Calculator" {
+          icon = "calc";
+          exec = "hey @rofi calcmenu";
+          categories = [ "Development" ];
+        })
+        (mkLauncherEntry "Open Bookmark ->" {
+          description = "In ${config.modules.desktop.browsers.default}";
+          icon = "bookmark-new-symbolic";
+          exec = "hey @rofi bookmarkmenu";
+        })
+        (mkLauncherEntry "Open File ->" {
+          icon = "folder";
+          exec = ''hey @rofi filemenu -file-browser-dir "\$HOME"'';
+        })
+        (mkLauncherEntry "Open Directory in Terminal ->" {
+          icon = "folder";
+          exec = ''hey @rofi filemenu -file-browser-dir "\$HOME" -file-browser-depth 4 -file-browser-no-descend -file-browser-only-dirs -file-browser-cmd "hey .open-term -- cd"'';
+        })
+        (mkLauncherEntry "Emoji Selector ->" {
+          icon = "face-smile";
+          exec = "hey @rofi emojimenu";
+        })
+        (mkLauncherEntry "Power Menu ->" {
+          icon = "system-shutdown";
+          exec = "hey @rofi powermenu";
+        })
+        (mkLauncherEntry "Manage Wireless Networks ->" {
+          icon = "network-wireless";
+          exec = "hey @rofi wifimenu";
+        })
+      ];
+    }
+
+    (mkIf config.hardware.bluetooth.enable {
+      user.packages = [
+        (mkLauncherEntry "Manage Bluetooth Devices ->" {
+          icon = "bluetooth";
+          exec = "${pkgs.rofi-bluetooth}/bin/rofi-bluetooth";
+        })
+      ];
+    })
+
+    (mkIf config.modules.shell.vaultwarden.enable {
+      user.packages = [
+        (mkLauncherEntry "Password Manager" {
+          icon = "changes-prevent";
+          exec = "hey @rofi vaultmenu";
+        })
+        (mkLauncherEntry "Password Manager: resume from last time" {
+          icon = "changes-prevent";
+          exec = "hey @rofi vaultmenu -l";
+        })
+      ];
+    })
+
+    (mkIf config.services.udisks2.enable {
+      user.packages = [
+        (mkLauncherEntry "Mount/unmount Devices ->" {
+          icon = "drive-harddisk";
+          exec = "hey @rofi mountmenu";
+        })
+      ];
+    })
+  ]);
 }

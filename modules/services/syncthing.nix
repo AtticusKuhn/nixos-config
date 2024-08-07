@@ -1,7 +1,7 @@
-{ config, options, pkgs, lib, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.services.syncthing;
 in {
   options.modules.services.syncthing = {
@@ -14,6 +14,7 @@ in {
       overrideDevices = true;
       overrideFolders = true;
       openDefaultPorts = true;
+<<<<<<< HEAD
       user = "atticusk"; # config.user.name;
       systemService = true;
       group   = "wheel";
@@ -35,6 +36,11 @@ in {
           };
         };
       };
+=======
+      user = config.user.name;
+      configDir = "${config.home.configDir}/syncthing";
+      dataDir = "${config.home.dataDir}/syncthing";
+>>>>>>> origin
     };
   };
 }

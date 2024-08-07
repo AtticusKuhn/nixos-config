@@ -1,7 +1,7 @@
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.editors;
 in {
   options.modules.editors = {
@@ -9,6 +9,6 @@ in {
   };
 
   config = mkIf (cfg.default != null) {
-    env.EDITOR = cfg.default;
+    environment.variables.EDITOR = cfg.default;
   };
 }

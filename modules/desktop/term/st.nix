@@ -3,10 +3,10 @@
 # I like (x)st. This appears to be a controversial opinion; don't tell anyone,
 # mkay?
 
-{ options, config, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.term.st;
 in {
   options.modules.desktop.term.st = {
@@ -14,22 +14,25 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # xst-256color isn't supported over ssh, so revert to a known one
-    modules.shell.zsh.rcInit = ''
-      [ "$TERM" = xst-256color ] && export TERM=xterm-256color
-    '';
-
     user.packages = with pkgs; [
       xst  # st + nice-to-have extensions
+<<<<<<< HEAD
       lukesmithxyz-st
       (makeDesktopItem {
         name = "xst";
         desktopName = "Suckless Terminal";
         genericName = "Default terminal";
+=======
+      (mkLauncherEntry "Suckless Terminal" {
+        description = "Open default terminal application";
+>>>>>>> origin
         icon = "utilities-terminal";
         exec = "${xst}/bin/xst";
         categories = [ "Development" "System" "Utility" ];
       })
     ];
+
+    # xst-256color isn't supported over ssh, so revert to a known one
+    modules.shell.tmux.term = mkForce "xterm-256color";
   };
 }

@@ -1,7 +1,7 @@
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.shell.gnupg;
 in {
   options.modules.shell.gnupg = with types; {
@@ -10,8 +10,9 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.variables.GNUPGHOME = "$XDG_CONFIG_HOME/gnupg";
+    environment.sessionVariables.GNUPGHOME = "$HOME/.config/gnupg";
 
+<<<<<<< HEAD
     programs.gnupg.agent =  {
       enable = true;
       # pinentryFlavor = "gtk2";
@@ -29,6 +30,30 @@ in {
         default-cache-ttl ${toString cfg.cacheTTL}
         pinentry-program ${pkgs.pinentry.gtk2}/bin/pinentry
       '';
+=======
+    # systemd.user.services.gpg-agent.serviceConfig.Environment = [
+    #   "GNUPGHOME=${config.home.configDir}/gnupg"
+    # ];
+
+    programs.gnupg = {
+      agent = {
+        enable = true;
+        pinentryPackage = pkgs.pinentry-rofi.override {
+          rofi = if config.modules.desktop.type == "wayland"
+                 then pkgs.rofi-wayland-unwrapped
+                 else pkgs.rofi;
+        };
+      };
+      # There's a release between 2.2 and 2.4 where GPG is broken. Rather than
+      # risk hitting it, I'm installing GnuPG from nixos-unstable.
+      package = pkgs.unstable.gnupg;
+>>>>>>> origin
     };
+
+    home.configFile."gnupg/gpg-agent.conf".text = ''
+      default-cache-ttl ${toString cfg.cacheTTL}
+      allow-emacs-pinentry
+      allow-loopback-pinentry
+    '';
   };
 }

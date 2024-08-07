@@ -1,17 +1,19 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ mkShell, writeShellScriptBin, nixVersions, git, nix-zsh-completions, ... }:
 
-with pkgs;
-let nixBin =
-      writeShellScriptBin "nix" ''
-        ${nixFlakes}/bin/nix --option experimental-features "nix-command flakes" "$@"
-      '';
+let nixConfig = builtins.toFile "nix.conf" ''
+      warn-dirty = false
+      http2 = true
+      experimental-features = nix-command flakes
+      use-xdg-base-directories = true
+    '';
 in mkShell {
   buildInputs = [
     git
     nix-zsh-completions
+    nixVersions.nix_2_19
   ];
   shellHook = ''
-    export FLAKE="$(pwd)"
-    export PATH="$FLAKE/bin:${nixBin}/bin:$PATH"
+    export NIX_USER_CONF_FILES="${nixConfig}"
+    export PATH="$(pwd)/bin:$PATH"
   '';
 }

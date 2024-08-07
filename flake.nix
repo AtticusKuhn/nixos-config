@@ -12,72 +12,60 @@
 
   inputs = 
     {
-      # Core dependencies.
-      nixpkgs.url = "nixpkgs/nixos-unstable";             # primary nixpkgs
-      nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";  # for packages on the edge
-      home-manager.url = "github:rycee/home-manager/master";
+      # Core dependecies
+      nixpkgs.url = "nixpkgs/nixos-24.05";
+      nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+      home-manager.url = "github:nix-community/home-manager/release-24.05";
       home-manager.inputs.nixpkgs.follows = "nixpkgs";
       agenix.url = "github:ryantm/agenix";
       agenix.inputs.nixpkgs.follows = "nixpkgs";
+      # TODO: Declarative partitions
+      # disko.url = "github:nix-community/disko";
+      # disko.inputs.nixpkgs.follows = "nixpkgs";
 
-      # Extras
-      emacs-overlay.url  = "github:nix-community/emacs-overlay";
+      # Hyprland + core extensions
+      hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+      hyprlock.url = "github:hyprwm/Hyprlock";
+      hyprlock.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # hypridle.url = "github:hyprwm/hypridle";
+      # hypridle.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      waybar.url = "github:Alexays/Waybar";
+      waybar.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
+      # Extras (imported directly by modules/hosts that need them)
+      spicetify-nix.url = "github:the-argus/spicetify-nix";
+      spicetify-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      hyprpicker.url = "github:hyprwm/hyprpicker";
+      hyprpicker.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      blender-bin.url = "github:edolstra/nix-warez?dir=blender";
+      blender-bin.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      emacs-overlay.url = "github:nix-community/emacs-overlay";
+      emacs-overlay.inputs.nixpkgs.follows = "nixpkgs-unstable";
+      emacs-overlay.inputs.nixpkgs-stable.follows = "nixpkgs";
       nixos-hardware.url = "github:nixos/nixos-hardware";
     };
 
-  outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, ... }:
+  outputs = inputs @ { self, nixpkgs, nixos-hardware, ... }:
     let
-      inherit (lib.my) mapModules mapModulesRec mapHosts;
-
-      system = "x86_64-linux";
-
-      mkPkgs = pkgs: extraOverlays: import pkgs {
-        inherit system;
-        config.allowUnfree = true;  # forgive me Stallman senpai
-        config.android_sdk.accept_license = true;
-
-        overlays = extraOverlays ++ (lib.attrValues self.overlays);
+      args = {
+        inherit self;
+        inherit (nixpkgs) lib;
+        pkgs = import nixpkgs {};
       };
-      pkgs  = mkPkgs nixpkgs [ self.overlay ];
-      pkgs' = mkPkgs nixpkgs-unstable [];
+      lib = import ./lib args;
+    in
+      with builtins; with lib; mkFlake inputs {
+        systems = [ "x86_64-linux" "aarch64-linux" ];
+        inherit lib;
 
-      lib = nixpkgs.lib.extend
-        (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
-    in {
-      lib = lib.my;
+        hosts = mapHosts ./hosts;
+        modules.default = import ./.;
 
-      overlay =
-        final: prev: {
-          unstable = pkgs';
-          my = self.packages."${system}";
-        };
-
-      overlays =
-        mapModules ./overlays import;
-
-      packages."${system}" =
-        mapModules ./packages (p: pkgs.callPackage p {});
-
-      nixosModules =
-        { dotfiles = import ./.; } // mapModulesRec ./modules import;
-
-      nixosConfigurations =
-        mapHosts ./hosts {};
-
-      devShell."${system}" =
-        import ./shell.nix { inherit pkgs; };
-
-      templates = {
-        full = {
-          path = ./.;
-          description = "A grossly incandescent nixos config";
-        };
-      } // import ./templates;
-      defaultTemplate = self.templates.full;
-
-      defaultApp."${system}" = {
-        type = "app";
-        program = ./bin/hey;
+        apps.install = mkApp ./install.zsh;
+        devShells.default = import ./shell.nix;
+        checks = mapModules ./test import;
+        overlays = mapModules ./overlays import;
+        packages = mapModules ./packages import;
+        # templates = import ./templates args;
       };
-    };
 }

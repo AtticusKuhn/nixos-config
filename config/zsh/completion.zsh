@@ -1,9 +1,13 @@
-fpath+=( $ZDOTDIR/completions )
+fpath+=( "${0:a:h}/completions" )
 
 # Don't offer history completion; we have fzf, C-r, and
 # zsh-history-substring-search for that.
 ZSH_AUTOSUGGEST_STRATEGY=(completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=30
+
+# Completion is slow. Use a cache! For the love of god, use a cache...
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh"
 
 # Expand partial paths, e.g. cd f/b/z == cd foo/bar/baz (assuming no ambiguity)
 zstyle ':completion:*:paths' path-completion yes
@@ -14,25 +18,29 @@ zstyle ':bracketed-paste-magic' active-widgets '.self-*'
 
 # Options
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
+setopt EXTENDED_GLOB       # Use extended globbing syntax.
 setopt PATH_DIRS           # Perform path search even on command names with slashes.
 setopt AUTO_MENU           # Show completion menu on a successive tab press.
 setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
 # setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
 # setopt AUTO_PARAM_KEYS
-# setopt FLOW_CONTROL        # Disable start/stop characters in shell editor.
+unsetopt FLOW_CONTROL        # Redundant with tmux
 unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
-unsetopt COMPLETE_ALIASES  # Completion for aliases
+unsetopt COMPLETE_ALIASES  # Disabling this enables completion for aliases
 # unsetopt ALWAYS_TO_END     # Move cursor to the end of a completed word.
 unsetopt CASE_GLOB
 
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
 # Fuzzy match mistyped completions.
-zstyle ':completion:*' completer _complete _list _match _approximate
+zstyle ':completion:*' completer _complete _match _approximate _list
+zstyle ':completion:*' matcher-list 'm:{[:lower:]-}={[:upper:]_}' 'r:[[:ascii:]]||[[:ascii:]]=** r:|?=**'
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
 # Increase the number of errors based on the length of the typed word.
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 # Don't complete unavailable commands.
-zstyle ':completion:*:functions' ignored-patterns '(_*|.*|pre(cmd|exec))'
+zstyle ':completion:*:(functions|parameters)' ignored-patterns '(_*|.*|-*|+*|autosuggest-*|pre(cmd|exec))'
 # Group matches and describe.
 zstyle ':completion:*:corrections' format '%B%F{green}%d (errors: %e)%f%b'
 zstyle ':completion:*:messages' format '%B%F{yellow}%d%f%b'
@@ -56,8 +64,8 @@ zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-va
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 # Complete hostnames from ssh files too
 zstyle -e ':completion:*:hosts' hosts 'reply=(
-  ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
-  ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
+  ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.{config/,}ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
+  ${=${${${${(@M)${(f)"$(cat ~/.{config/,}ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
 )'
 # Don't complete uninteresting users
 zstyle ':completion:*:users' ignored-patterns \
@@ -95,3 +103,11 @@ zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hos
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+
+# Only generate the dump if it doesn't exist. `hey reload` will clear it. And
+# yes, -d is necessary. compinit doesn't respect cache-path.
+ZCOMPCACHE="$XDG_CACHE_HOME/zsh/zcompdump.$ZSH_VERSION"
+if autoload -Uz compinit; then
+  compinit -u -C -d "$ZCOMPCACHE"
+  [[ ! -f "$ZCOMPCACHE.zwc" && -f $ZCOMPCACHE ]] && zcompile "$ZCOMPCACHE"
+fi

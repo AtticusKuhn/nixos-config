@@ -1,9 +1,8 @@
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.media.ncmpcpp;
-    configDir = config.dotfiles.configDir;
 in {
   options.modules.desktop.media.ncmpcpp = {
     enable = mkBoolOpt false;
@@ -15,13 +14,13 @@ in {
       (ncmpcpp.override { visualizerSupport = true; })
     ];
 
-    env.NCMPCPP_HOME = "$XDG_CONFIG_HOME/ncmpcpp";
+    environment.variables.NCMPCPP_HOME = "$XDG_CONFIG_HOME/ncmpcpp";
 
     # Symlink these one at a time because ncmpcpp writes other files to
     # ~/.config/ncmpcpp, so it needs to be writeable.
     home.configFile = {
-      "ncmpcpp/config".source   = "${configDir}/ncmpcpp/config";
-      "ncmpcpp/bindings".source = "${configDir}/ncmpcpp/bindings";
+      "ncmpcpp/config".source   = "${hey.configDir}/ncmpcpp/config";
+      "ncmpcpp/bindings".source = "${hey.configDir}/ncmpcpp/bindings";
     };
   };
 }

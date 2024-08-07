@@ -1,11 +1,11 @@
 # modules/dev/common-lisp.nix --- https://common-lisp.net/
 #
-# Mostly for my stumpwm config, and the occasional dip into lisp gamedev.
+# Mostly for the occasional dip into lisp gamedev.
 
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let devCfg = config.modules.dev;
     cfg = devCfg.common-lisp;
 in {
@@ -23,7 +23,12 @@ in {
     })
 
     (mkIf cfg.xdg.enable {
-      # TODO
+      # Moves ~/.sbclrc to ~/.config/sbcl/rc
+      environment.etc."sbclrc".text = ''
+        (require :asdf)
+        (setf db-ext:*userinit-pathname-function*
+              (lambda () (uiop:xdg-config-home #P"sbcl/rc")))
+      '';
     })
   ];
 }

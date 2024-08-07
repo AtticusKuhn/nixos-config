@@ -1,14 +1,14 @@
 # modules/desktop/media/daw.nix
 #
-# I make music for my games. LMMS is my DAW; or will be, once I've weened myself
-# off of Fruityloops. When I'm in the mood for a quicky I fire up sunvox
-# instead. It runs absolutely anywhere, even on my ipad and phone. As if I'd
-# ever need to.
+# I make games on my spare time (and occasionally edit audio for videos). These
+# need music and sound effects. In the past, I've used Apple Logic, Fruityloops,
+# and Adobe Audition. To replace them on Linux, I've replaced them with Ardour,
+# LMMS, and Audacity, respectively with much success.
 
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.media.daw;
 in {
   options.modules.desktop.media.daw = {
@@ -16,11 +16,22 @@ in {
   };
 
   config = mkIf cfg.enable {
+    services.pipewire.jack.enable = true;
+
     user.packages = with pkgs; [
-      unstable.ardour  # recording, mixing, loops
-      lmms             # for making music
-      unstable.sunvox  # my favorite midi tracker
-      # audacity   # for recording and remastering audio
+      unstable.ardour      # My DAW for recording
+      unstable.audacity    # For one-off audio editing
+      unstable.sunvox      # For chiptune
+
+      # LMMS creates .lmmsrc.xml in $HOME on launch (see LMMS/lmms#5869).
+      # Jailing it has the side-effect of rooting all file dialogs in the fake
+      # home, but this is easily worked around by adding proper shortcuts.
+      (mkWrapper unstable.lmms ''
+        wrapProgram "$out/bin/lmms" \
+          --run 'cfgdir="$XDG_CONFIG_HOME/lmms"' \
+          --run 'mkdir -p "$cfgdir"' \
+          --add-flags '-c "$cfgdir/rc.xml"'
+      '')
     ];
   };
 }

@@ -1,11 +1,11 @@
-{ config, options, lib, pkgs, ... }:
+{ hey, lib, config, options, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.dev;
 in {
   options.modules.dev = {
-    xdg.enable = mkBoolOpt true;
+    xdg.enable = mkBoolOpt config.modules.xdg.enable;
   };
 
   config = mkIf cfg.xdg.enable {
