@@ -15,21 +15,13 @@ let cfg = config.modules.editors.emacs;
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;
-<<<<<<< HEAD
-    doom = rec {
-      enable = mkBoolOpt false;
-      # forgeUrl = mkOpt types.str "https://github.com";
-      # repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
-      # configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/doom-emacs-private";
-    };
-=======
+
     # doom = rec {
     #   enable = mkBoolOpt false;
     #   forgeUrl = mkOpt types.str "https://github.com";
     #   repoUrl = mkOpt types.str "${forgeUrl}/doomemacs/doomemacs";
     #   configRepoUrl = mkOpt types.str "${forgeUrl}/hlissner/.doom.d";
     # };
->>>>>>> origin
   };
 
   config = mkIf cfg.enable {
@@ -46,14 +38,9 @@ in {
 
       ## Emacs itself
       binutils       # native-comp needs 'as', provided by this
-<<<<<<< HEAD
-      # 28.2 + native-comp
-      ((emacsPackagesFor emacs-unstable).emacsWithPackages
-        (epkgs: [ epkgs.vterm ]))
-=======
+
       # HEAD + native-comp
       emacs
->>>>>>> origin
 
       ## Doom dependencies
       git
@@ -76,42 +63,22 @@ in {
       sqlite
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
-<<<<<<< HEAD
       # This is used for telega.el, which is a telegram client
       tdlib
       # also for telege.el/??
       emacsPackages.telega
 
-=======
-      # :lang beancount
-      beancount
-      fava
       # :lang nix
       age
->>>>>>> origin
     ];
 
     environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
 
     modules.shell.zsh.rcFiles = [ "${hey.configDir}/emacs/aliases.zsh" ];
 
-<<<<<<< HEAD
-    fonts.packages = [ pkgs.emacs-all-the-icons-fonts ];
 
-    services.xserver.displayManager.sessionCommands = ''
-    emacs --daemon &
-    '';
-    system.userActivationScripts = mkIf cfg.doom.enable {
-      installDoomEmacs = ''
-        if [ ! -d "$XDG_CONFIG_HOME/emacs" ]; then
-           git clone --depth=1 --single-branch "${cfg.doom.repoUrl}" "$XDG_CONFIG_HOME/emacs"
-        fi
-      '';
-    };
-=======
     fonts.packages = [
       (pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
     ];
->>>>>>> origin
   };
 }

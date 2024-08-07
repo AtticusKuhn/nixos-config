@@ -17,15 +17,9 @@ in {
     enable         = mkBoolOpt false;
     tools.enable   = mkBoolOpt false;
     raster.enable  = mkBoolOpt true;
-<<<<<<< HEAD
-    vector.enable  = mkBoolOpt false;
-    sprites.enable = mkBoolOpt false;
-    models.enable  = mkBoolOpt false;
-=======
     vector.enable  = mkBoolOpt true;
     sprites.enable = mkBoolOpt true;
     design.enable  = mkBoolOpt true;
->>>>>>> origin
   };
 
   config = mkIf cfg.enable {
@@ -45,17 +39,6 @@ in {
         inkscape
       ]) ++
 
-<<<<<<< HEAD
-      # Replaces photoshop
-      #
-      (if cfg.raster.enable then [
-        # krita
-        # gimp
-
-        gimp
-        # gimpPlugins.resynthesizer  # content-aware scaling in gimp
-      ] else []) ++
-=======
       # Replaces Photoshop
       (optionals cfg.raster.enable [
         (gimp-with-plugins.override {
@@ -67,7 +50,6 @@ in {
         })
         krita   # But Krita is better for digital illustration
       ]) ++
->>>>>>> origin
 
       # Sprite sheets & animation
       (optionals cfg.sprites.enable [

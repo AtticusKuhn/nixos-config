@@ -14,7 +14,6 @@ in {
       overrideDevices = true;
       overrideFolders = true;
       openDefaultPorts = true;
-<<<<<<< HEAD
       user = "atticusk"; # config.user.name;
       systemService = true;
       group   = "wheel";
@@ -36,11 +35,6 @@ in {
           };
         };
       };
-=======
-      user = config.user.name;
-      configDir = "${config.home.configDir}/syncthing";
-      dataDir = "${config.home.dataDir}/syncthing";
->>>>>>> origin
     };
   };
 }

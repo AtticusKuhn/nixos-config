@@ -1,8 +1,8 @@
 
-{ options, config, lib, pkgs, ... }:
 
+{ hey, lib, config, options, pkgs, ... }:
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.theme;
 in {
   config = mkIf (cfg.active == "pywal") (mkMerge [

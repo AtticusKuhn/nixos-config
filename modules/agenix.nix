@@ -8,12 +8,7 @@ with hey.lib;
 let hostKey = "/etc/ssh/host_ed25519";
     globalKey = "/etc/ssh/global_ed25519";
 in {
-<<<<<<< HEAD
-  imports = [ agenix.nixosModules.age ];
-  # environment.systemPackages = [ agenix.defaultPackage.x86_64-linux ];
-=======
   imports = [ hey.modules.agenix.age ];
->>>>>>> origin
 
   options.modules.agenix = with types; {
     dirs = mkOpt (listOf (either str path)) [

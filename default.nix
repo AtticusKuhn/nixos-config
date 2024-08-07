@@ -14,20 +14,6 @@ with hey.lib;
     user = mkOpt attrs { name = ""; };
   };
 
-<<<<<<< HEAD
-  # Just the bear necessities...
-  environment.systemPackages = with pkgs; [
-    bind
-    cached-nix-shell
-    git
-    vim
-    wget
-    gnumake
-    unzip
-  ];
-  # this is bad!
-  home-manager.users.atticusk.home.packages =   [ pkgs.wget  ];
-=======
   config = {
     assertions = [{
       assertion = config.user ? name;
@@ -111,5 +97,4 @@ with hey.lib;
       cores = 2;          # default: 1
     };
   };
->>>>>>> origin
 }

@@ -36,13 +36,6 @@ in {
       enableLsColors = false;
     };
 
-<<<<<<< HEAD
-    user.packages = with pkgs; [
-      zsh
-      nix-zsh-completions
-      bat
-      eza
-=======
     users.defaultUserShell = pkgs.zsh;
 
     # Some interactive shell utilies I find universally indispensible.
@@ -52,7 +45,6 @@ in {
       bc
       dust     # a better du
       eza      # a better ls
->>>>>>> origin
       fasd
       fd
       fzf

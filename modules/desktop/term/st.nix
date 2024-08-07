@@ -16,16 +16,9 @@ in {
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       xst  # st + nice-to-have extensions
-<<<<<<< HEAD
       lukesmithxyz-st
-      (makeDesktopItem {
-        name = "xst";
-        desktopName = "Suckless Terminal";
-        genericName = "Default terminal";
-=======
       (mkLauncherEntry "Suckless Terminal" {
         description = "Open default terminal application";
->>>>>>> origin
         icon = "utilities-terminal";
         exec = "${xst}/bin/xst";
         categories = [ "Development" "System" "Utility" ];

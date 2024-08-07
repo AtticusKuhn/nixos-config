@@ -1,7 +1,7 @@
-{ options, config, lib, pkgs, ... }:
+{ hey, options, config, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.hardware.nvidia;
 in {
   options.modules.hardware.nvidia = {

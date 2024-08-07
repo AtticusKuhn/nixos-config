@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ hey, lib, ... }:
 {
   imports = [
     ../home.nix
@@ -75,6 +75,9 @@
 
 
   ## Local config
+   ## Local config
+  config = { pkgs, ... }: {
+    # systemd.network.networks.wg0.address = [ "10.10.0.3/32" ];
   # programs.ssh.startAgent = true;
   # services.openssh.startWhenNeeded = true;
 
@@ -98,6 +101,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
   boot.kernelParams = ["i915.force_probe=46a8"];
+  };
 
 
 

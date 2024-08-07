@@ -1,9 +1,9 @@
 # modules/hardware/razer.nix --- support for razer devices
 
-{ options, config, lib, pkgs, ... }:
+{ hey, options, config, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.hardware.razer;
 in {
   options.modules.hardware.razer = {
