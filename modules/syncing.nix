@@ -1,7 +1,7 @@
-{ config, options, pkgs, lib, ... }:
+{hey, config, options, pkgs, lib, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.services.syncthing;
 in {
   options.modules.syncing= {

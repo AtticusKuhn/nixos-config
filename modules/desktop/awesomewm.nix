@@ -1,7 +1,7 @@
-{ options, config, lib, pkgs, ... }:
+{hey, options, config, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.awesomewm;
     configDir = config.dotfiles.configDir;
 in {

@@ -1,9 +1,9 @@
 # modules/desktop/media/docs.nix
 
-{ options, config, lib, pkgs, ... }:
+{ hey, options, config, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.media.documents;
 in {
   options.modules.desktop.media.documents = {

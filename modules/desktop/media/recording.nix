@@ -4,10 +4,10 @@
 # This, paired with DaVinci Resolve for video editing (on my Windows system) and
 # I have what I need for youtube videos and streaming.
 
-{ config, options, lib, pkgs, ... }:
+{hey, config, options, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.media.recording;
 in {
   options.modules.desktop.media.recording = {

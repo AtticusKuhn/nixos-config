@@ -1,7 +1,7 @@
-{ config, options, lib, home-manager, ... }:
+{ hey ,config, options, lib, home-manager, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 {
   options = with types; {
     user = mkOpt attrs {};

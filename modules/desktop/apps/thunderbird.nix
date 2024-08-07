@@ -1,7 +1,7 @@
-{ config, options, lib, pkgs, ... }:
+{hey, config, options, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.apps.thunderbird;
   # Inspiration: https://github.com/NixOS/nixpkgs/issues/108480#issuecomment-1115108802
   # isync-oauth2 = with pkgs; buildEnv {

@@ -1,10 +1,10 @@
 # modules/browser/qutebrowser.nix --- https://github.com/qutebrowser/qutebrowser
 #
 
-{ options, config, lib, pkgs, ... }:
+{ hey,options, config, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with hey.lib;
 let cfg = config.modules.desktop.browsers.qutebrowser;
     pkg = pkgs.unstable.qutebrowser;
     configDir = config.dotfiles.configDir;

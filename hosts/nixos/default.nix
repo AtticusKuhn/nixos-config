@@ -1,5 +1,7 @@
 { hey, lib, ... }:
 {
+  system = "x86_64-linux";
+
   imports = [
     ../home.nix
     /etc/nixos/hardware-configuration.nix
