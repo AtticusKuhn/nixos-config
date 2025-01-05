@@ -71,7 +71,7 @@ in {
     })
 
     (mkIf (cfg.type == "x11") {
-      environment.sessionVariables.QT_QPA_PLATFORMTHEME = "gnome";
+      # environment.sessionVariables.QT_QPA_PLATFORMTHEME = "gnome";
 
       # Try really hard to get QT to respect my GTK theme.
       # environment.sessionVariables.GTK_DATA_PREFIX = [ "${config.system.path}" ];
@@ -83,12 +83,12 @@ in {
         xclip
         xdotool
         xorg.xwininfo
-        qgnomeplatform        # QPlatformTheme for a better Qt application inclusion in GNOME
+        # qgnomeplatform        # QPlatformTheme for a better Qt application inclusion in GNOME
         libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
       ];
 
       ## Apps/Services
-      services.xserver.displayManager.lightdm.greeters.mini.user = config.user.name;
+      services.xserver.displayManager.lightdm.greeters.mini.user = "atticusk";
 
       services.picom = {
         backend = "glx";
@@ -101,8 +101,6 @@ in {
           "0:_NET_WM_STATE@[2]:32a *= '_NET_WM_STATE_HIDDEN'"
           "0:_NET_WM_STATE@[3]:32a *= '_NET_WM_STATE_HIDDEN'"
           "0:_NET_WM_STATE@[4]:32a *= '_NET_WM_STATE_HIDDEN'"
-          "98:class_g = 'xst-256color'"
-          "90:class_g = 'xst-scratch'"
         ];
         shadowExclude = [
           # Put shadows on notifications, the scratch popup and rofi only

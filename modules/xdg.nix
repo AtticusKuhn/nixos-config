@@ -145,8 +145,8 @@ in {
 
       # Ensures .Xauthority is written (by the display manager or X11-compatible
       # programs) to $XDG_RUNTIME_DIR and /run/lightdm/*/, instead of $HOME.
-      services.xserver.displayManager.lightdm.extraConfig = "user-authority-in-system-dir = true\n";
-      services.displayManager.environment.XAUTHORITY = "$XDG_RUNTIME_DIR/xauthority";
+      # services.xserver.displayManager.lightdm.extraConfig = "user-authority-in-system-dir = true\n";
+      # services.displayManager.environment.XAUTHORITY = "$XDG_RUNTIME_DIR/xauthority";
 
       # See https://kdemonkey.blogspot.com/2008/04/magic-trick.html, then
       # https://github.com/NixOS/nixpkgs/blob/25865a40d14b3f9cf19f19b924e2ab4069b09588/nixos/modules/services/x11/display-managers/default.nix#L98-L105,

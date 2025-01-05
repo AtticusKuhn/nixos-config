@@ -18,6 +18,6 @@ in {
             then [ exts.pass-tomb ]
             else [])))
     ];
-    env.PASSWORD_STORE_DIR = cfg.passwordStoreDir;
+    # env.PASSWORD_STORE_DIR = cfg.passwordStoreDir;
   };
 }

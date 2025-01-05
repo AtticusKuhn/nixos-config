@@ -27,11 +27,12 @@ with hey.lib;
 
     # FIXME: Make this optional
     user = {
-      description = mkDefault "The primary user account";
+      description = mkDefault "Atticus Kuhn";
       extraGroups = [ "wheel" ];
       isNormalUser = true;
       home = "/home/${config.user.name}";
       group = "users";
+      name = "atticusk";
       uid = 1000;
     };
     users.users.${config.user.name} = mkAliasDefinitions options.user;

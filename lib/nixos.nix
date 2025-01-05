@@ -53,11 +53,16 @@ rec {
       # Processes external arguments that bin/hey will feed to this flake (using
       # a json payload in an envvar). The internal var is kept in lib to stop
       # 'nix flake check' from complaining more than it has to.
-      args =
-        let hargs = getEnv "HEYENV"; in
-        if hargs == ""
-        then abort "HEYENV envvar is missing"
-        else fromJSON hargs;
+      args = {
+        user="atticusk";
+        host="nixos";
+        path="/etc/dotfiles";
+        theme="autumnal";
+      };
+        # let hargs = getEnv "HEYENV"; in
+        # if hargs == ""
+        # then abort "HEYENV envvar is missing"
+        # else fromJSON hargs;
 
       # This is the only impurity we allow into this flake, because there are
       # many times where it is more convenient to generate or seed dotfiles or

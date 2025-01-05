@@ -65,6 +65,7 @@ in {
     # Install user packages to /etc/profiles instead. Necessary for
     # nixos-rebuild build-vm to work.
     home-manager = {
+      backupFileExtension = "backup";
       useUserPackages = true;
 
       # I only need a subset of home-manager's capabilities. That is, access to

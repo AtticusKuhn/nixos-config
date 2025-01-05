@@ -19,16 +19,22 @@ in {
     programs.gnupg = {
       agent = {
         enable = true;
-        pinentryPackage = pkgs.pinentry-rofi.override {
-          rofi = if config.modules.desktop.type == "wayland"
-                 then pkgs.rofi-wayland-unwrapped
-                 else pkgs.rofi;
-        };
+        pinentryPackage = pkgs.pinentry-gnome3;
+
+
+        # pinentryPackage = pkgs.pinentry-rofi.override {
+        #   rofi = if config.modules.desktop.type == "wayland"
+        #          then pkgs.rofi-wayland-unwrapped
+        #          else pkgs.rofi;
+        # };
       };
       # There's a release between 2.2 and 2.4 where GPG is broken. Rather than
       # risk hitting it, I'm installing GnuPG from nixos-unstable.
       package = pkgs.unstable.gnupg;
     };
+    user.packages = [
+      pkgs.pinentry-gnome3
+    ];
 
     home.configFile."gnupg/gpg-agent.conf".text = ''
       default-cache-ttl ${toString cfg.cacheTTL}

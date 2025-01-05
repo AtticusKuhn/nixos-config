@@ -17,12 +17,17 @@ in {
     enable         = mkBoolOpt false;
     tools.enable   = mkBoolOpt false;
     raster.enable  = mkBoolOpt true;
-    vector.enable  = mkBoolOpt true;
-    sprites.enable = mkBoolOpt true;
-    design.enable  = mkBoolOpt true;
+    vector.enable  = mkBoolOpt false;
+    sprites.enable = mkBoolOpt false;
+    design.enable  = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
+      # use gothic font in gimp.
+    fonts.packages = with pkgs; [
+      pkgs.yasashisa-gothic
+      texlivePackages.gothic
+    ];
     user.packages = with pkgs.unstable;
       # CLI/scripting tools
       (optionals cfg.tools.enable [
@@ -43,7 +48,7 @@ in {
       (optionals cfg.raster.enable [
         (gimp-with-plugins.override {
           plugins = with gimpPlugins; [
-            bimp            # batch image manipulation
+            # bimp            # batch image manipulation
             # resynthesizer   # content-aware scaling in gimp
             gmic            # an assortment of extra filters
           ];
@@ -88,6 +93,7 @@ in {
         source = "${hey.configDir}/gimp";
         recursive = true;
       };
+
       # TODO Inkscape dotfiles
     };
   };

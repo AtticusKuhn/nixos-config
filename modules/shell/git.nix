@@ -19,16 +19,16 @@ in {
       act
     ];
 
-    home-manager.users.${config.user.name} = {
-      programs.git  ={
-        enable = true;
-        extraConfig = {
-          safe = {
-            directory = "/etc/dotfiles";
-          };
-        };
-      };
-    };
+    # home-manager.users.${config.user.name} = {
+    #   programs.git  ={
+    #     enable = true;
+    #     extraConfig = {
+    #       safe = {
+    #         directory = "/etc/dotfiles";
+    #       };
+    #     };
+    #   };
+    # };
 
     home.configFile = {
       "git/config".source = "${hey.configDir}/git/config";

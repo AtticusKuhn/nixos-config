@@ -7,11 +7,12 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.editors.emacs;
-    emacs = with pkgs; (emacsPackagesFor
-      (if config.modules.desktop.type == "wayland"
-       then emacs-pgtk
-       else emacs-git)).emacsWithPackages
-      (epkgs: []);
+    emacs = pkgs.emacs;
+    # emacs = with pkgs; (emacsPackagesFor
+    #   (if config.modules.desktop.type == "wayland"
+    #    then emacs-pgtk
+    #    else emacs-git)).emacsWithPackages
+    #   (epkgs: []);
 in {
   options.modules.editors.emacs = {
     enable = mkBoolOpt false;
@@ -64,12 +65,13 @@ in {
       # :lang latex & :lang org (latex previews)
       texlive.combined.scheme-medium
       # This is used for telega.el, which is a telegram client
-      tdlib
+      unstable.tdlib
       # also for telege.el/??
-      emacsPackages.telega
-
+      unstable.emacsPackages.telega
       # :lang nix
       age
+      # :lang markdown
+      pandoc
     ];
 
     environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];

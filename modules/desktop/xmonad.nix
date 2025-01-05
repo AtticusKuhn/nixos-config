@@ -3,7 +3,8 @@
 with lib;
 with hey.lib;
 let cfg = config.modules.desktop.xmonad;
-    configDir = config.dotfiles.configDir;
+    configDir = hey.configDir;
+    # configDir = config.dotfiles.configDir;
 in {
   options.modules.desktop.xmonad = {
     enable = mkBoolOpt false;
@@ -14,6 +15,7 @@ in {
     #   ${pkgs.bspwm}/bin/bspc wm -r
     #   source $XDG_CONFIG_HOME/bspwm/bspwmrc
     # '';
+    modules.desktop.type = "x11";
 
     environment.systemPackages = with pkgs; [
       lightdm
@@ -27,9 +29,10 @@ in {
       # })
     ];
 
+    # modules.desktop.type = "wayland";
     services = {
-      picom.enable = true;
-      redshift.enable = true;
+      # picom.enable = ;
+      # redshift.enable = true;
       # this enables mouse touchpad???
       libinput.enable = true;
       displayManager.defaultSession = "none+xmonad";
@@ -37,7 +40,7 @@ in {
         enable = true;
         displayManager = {
           lightdm.enable = true;
-          lightdm.greeters.mini.enable = true;
+          # lightdm.greeters.mini.enable = true;
         };
         windowManager.xmonad = {
           enable = true;

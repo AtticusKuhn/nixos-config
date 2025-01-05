@@ -13,24 +13,24 @@ in {
   };
 
   config = mkIf cfg.enable {
-    services.avahi = {
-      enable = true;
-      publish = {
-        enable = true;
-        userServices = true;
-      };
-    };
+    # services.avahi = {
+    #   enable = true;
+    #   publish = {
+    #     enable = true;
+    #     userServices = true;
+    #   };
+    # };
 
-    services.printing = {
-      browsing = true;
-      listenAddresses = [ "*:631" ];
-      allowFrom = [ "all" ];
-      defaultShared = true;
-    };
+    # services.printing = {
+    #   browsing = true;
+    #   listenAddresses = [ "*:631" ];
+    #   allowFrom = [ "all" ];
+    #   defaultShared = true;
+    # };
 
-    networking.firewall = {
-      allowedUDPPorts = [ 631 ];
-      allowedTCPPorts = [ 631 ];
-    };
+    # networking.firewall = {
+    #   allowedUDPPorts = [ 631 ];
+    #   allowedTCPPorts = [ 631 ];
+    # };
   };
 }

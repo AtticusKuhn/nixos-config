@@ -1,4 +1,4 @@
-{hey, config, options, lib, pkgs, ... }:
+{hey, config, options, lib, pkgs,home-manager, ... }:
 
 with lib;
 with hey.lib;
@@ -30,7 +30,7 @@ in {
 
   ];
     # programs.thunderbird = {};
-    home-manager.users.${config.user.name} = {
+    home-manager.users.atticusk = {
       # programs.thunderbird = {
         # enable = true;
         # profiles = {

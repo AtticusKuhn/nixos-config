@@ -120,7 +120,7 @@ in {
 
       home-manager.users.${config.user.name} = {
         gtk = mkAliasDefinitions options.modules.theme.gtk;
-        dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+        # dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
       };
     }
 
@@ -148,10 +148,10 @@ in {
       environment.sessionVariables.XCURSOR_THEME = cfg.gtk.cursorTheme.name;
       environment.sessionVariables.XCURSOR_SIZE = toString cfg.gtk.cursorTheme.size;
       home.dataFile = {
-        "icons/default/index.theme".source =
-          "${cfg.gtk.iconTheme.package}/share/icons/default/index.theme";
-        "icons/${cfg.gtk.iconTheme.name}".source =
-          "${cfg.gtk.iconTheme.package}/share/icons/${cfg.gtk.iconTheme.name}";
+        # "icons/default/index.theme".source =
+        #   "${cfg.gtk.iconTheme.package}/share/icons/default/index.theme";
+        # "icons/${cfg.gtk.iconTheme.name}".source =
+        #   "${cfg.gtk.iconTheme.package}/share/icons/${cfg.gtk.iconTheme.name}";
       };
 
       fonts.packages = [

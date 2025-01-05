@@ -16,11 +16,12 @@
         # godot.enable = true;
         thunderbird.enable = true;
         whatsapp.enable = true;
+        discord.enable = true;
       };
       browsers = {
         default = "qutebrowser";
         # brave.enable = true;
-        # firefox.enable = true;
+        firefox.enable = true;
         qutebrowser.enable = true;
       };
       media = {
@@ -45,9 +46,9 @@
       ocaml.enable = true;
       latex.enable = true;
       sqlite.enable = true;
-      # node.enable = true;
+      node.enable = true;
       # rust.enable = true;
-      # python.enable = true;
+      python.enable = true;
     };
     editors = {
       default = "emacs";
@@ -55,6 +56,7 @@
       # idea.enable = true;
       # android-studio.enable = true;
       # vim.enable = true;
+      vscode.enable = true;
     };
     shell = {
       # adl.enable = true;
@@ -72,7 +74,7 @@
       # Needed occasionally to help the parental units with PC problems
       # teamviewer.enable = true;
     };
-    theme.active = "alucard";
+    theme.active = "autumnal";
   };
 
 
@@ -82,8 +84,10 @@
     # systemd.network.networks.wg0.address = [ "10.10.0.3/32" ];
   # programs.ssh.startAgent = true;
   # services.openssh.startWhenNeeded = true;
-
+  programs.dconf.enable = true;
   networking.networkmanager.enable = true;
+  users.extraGroups.vboxusers.members = [ "atticusk" ];
+  virtualisation.virtualbox.host.enable = false;
   # programs.nm-applet.enable = true;
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;

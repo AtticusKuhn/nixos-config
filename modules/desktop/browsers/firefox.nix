@@ -51,6 +51,40 @@ in {
         DontCheckDefaultBrowser = true;
         DisablePocket = true;
         DisableAppUpdate = true;
+        DisableTelemetry = true;
+        DisableFirefoxStudies = true;
+        EnableTrackingProtection = {
+          Value= true;
+          Locked = true;
+          Cryptomining = true;
+          Fingerprinting = true;
+        };
+        OverrideFirstRunPage = "";
+        OverridePostUpdatePage = "";
+        ExtensionSettings = {
+          # uBlock Origin:
+          "uBlock0@raymondhill.net" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+            installation_mode = "force_installed";
+          };
+          # Privacy Badger:
+          "jid1-MnnxcxisBPnSXQ@jetpack" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/privacy-badger17/latest.xpi";
+            installation_mode = "force_installed";
+          };
+          "{ddc62400-f22d-4dd3-8b4a-05837de53c2e}" = {
+            installation_mode = "force_installed";
+          };
+          "treestyletab@piro.sakura.ne.jp" =  {
+            installation_mode = "force_installed";
+          };
+          "{9ad66b79-fd5e-477a-8915-eea26c83ff42}" = {
+            installation_mode = "force_installed";
+          };
+          "languagetool-webextension@languagetool.org" = {
+            installation_mode = "force_installed";
+          };
+        };
       };
     };
 
@@ -85,7 +119,7 @@ in {
       # all the machines I use Firefox on, this is no concern to me.
       "services.sync.prefs.sync.browser.uiCustomization.state" = true;
       # Enable userContent.css and userChrome.css for our theme modules
-      "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+      "toolkit.legacyUserProfileCustomizations.stylesheets" = false;
       # Stop creating ~/Downloads!
       "browser.download.dir" = "${config.user.home}/downloads";
       # Don't use the built-in password manager. A nixos user is more likely

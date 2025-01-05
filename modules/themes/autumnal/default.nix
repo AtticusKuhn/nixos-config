@@ -29,12 +29,11 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
             name = "Graphite-pink-Dark";
             package = pkgs.graphite-gtk-theme.override {
               themeVariants = [ "pink" ];
-              colorVariants = [ "dark" ];
+              colorVariants = [ "light" ];
               # sizeVariants = [ "compact" ];
               tweaks = [
                 "normal"
                 "rimless"
-                "darker"
               ];
             };
           };
@@ -79,7 +78,7 @@ in mkIf (cfg.active == "autumnal") (mkMerge [
       shell.tmux.rcFiles = [ ./config/tmux.conf ];
       desktop.browsers = {
         firefox = {
-          settings."devtools.theme" = "dark";
+          settings."devtools.theme" = "light";
           userChrome = concatMapStringsSep "\n" readFile [
             ./config/firefox/userChrome.css
           ];

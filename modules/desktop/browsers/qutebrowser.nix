@@ -7,7 +7,8 @@ with lib;
 with hey.lib;
 let cfg = config.modules.desktop.browsers.qutebrowser;
     pkg = pkgs.unstable.qutebrowser;
-    configDir = config.dotfiles.configDir;
+    # configDir = config.dotfiles.configDir;
+    configDir = hey.configDir;
 in {
   options.modules.desktop.browsers.qutebrowser = with types; {
     enable = mkBoolOpt false;

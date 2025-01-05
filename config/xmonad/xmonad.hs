@@ -56,10 +56,13 @@ myKeyBindings =    [
         ("<XF86MonBrightnessUp>", spawn "light -A 1"),
         ("<XF86MonBrightnessDown>", spawn "light -U 1"),
         ("M-f", spawn "$BROWSER"),
+        ("M-b", spawn "firefox"),
         ("M-w p" , spawn "~/scripts/wallpaper.sh"),
         ("M-m" , spawn "~/scripts/monitors.sh"),
         ("M-t b" , spawn "thunderbird"),
         ("M-w a" , spawn "whatsapp-for-linux"),
+        ("M-v c" , spawn "code ."),
+        ("M-d c" , spawn "dissent"),
         ("M-g p" , spawn "gimp"),
         ("M-e g", spawn "st -e $EDITOR")
         , ("M-v", spawn "$VISUAL")
